@@ -1,0 +1,16 @@
+create database player_db;
+use player_db;
+create table team( team_id int primary key, team_name varchar(6) not null);
+insert into team values( 1, 'CSK');
+insert into team values( 2, 'RCB');
+insert into team values( 3, 'MI');
+insert into team values( 4, 'RR');
+insert into team values( 5, 'SRH');
+insert into team values( 6, 'KKR');
+select * from team;
+desc team;
+create table player (player_no int primary key auto_increment, player_name varchar(20) not null, category varchar(20), highest_score int, best_figure varchar(10));
+create table teamplayer (player_no int, team_id int, foreign key(player_no) references player(player_no), foreign key(team_id) references team(team_id));
+select * from player;
+select * from team;
+select * from teamplayer;
