@@ -1,3 +1,5 @@
 /.idea
 /__pycache__
 /console_env
+/test
+config.ini
