@@ -12,18 +12,22 @@ def getplayerfromdb() -> list:
     try:
         connector = Utility.getconnection()
         pointer = connector.cursor()
-        pointer.execute("select* from player;")
-        resultset = pointer.fetchall()
+        try:
+            pointer.execute("select* from player;")
+            resultset = pointer.fetchall()
+        except :
+            raise Exceptions.DaoExceptions('table not found!!')
         playerlist = []
         for player in resultset:
             player_obj = Player(name = player[1],category = player[2],score = player[3],
                                 bestfigure = player[4],id = player[0])
             playerlist.append(player_obj)
         return playerlist
-    except Exception:
-        raise Exceptions.DaoExceptions('Error occurred while fetching player data from database')
+    except Exceptions.DaoExceptions as e:
+        raise Exceptions.DaoExceptions(e.message+'\nError occurred while fetching player data from database')
     finally:
-        connector.close()
+        if connector is not None:
+            connector.close()
 
 
 def getteamsfromdb()->list:
@@ -31,21 +35,26 @@ def getteamsfromdb()->list:
     try:
         connector = Utility.getconnection()
         pointer = connector.cursor()
-        pointer.execute("select* from team;")
-        resultset = pointer.fetchall()
+        try:
+            pointer.execute("select* from team;")
+            resultset = pointer.fetchall()
+        except:
+            raise Exceptions.DaoExceptions('table not found!!')
         teamlist = []
         for team in resultset:
             team_obj = Team(team[0],team[1])
             teamlist.append(team_obj)
         return teamlist
-    except Exception:
-        raise Exceptions.DaoExceptions('Error occurred while fetching teams data from database')
+    except Exceptions.DaoExceptions as e:
+        raise Exceptions.DaoExceptions(e.message+'\nError occurred while fetching teams data from database')
     finally:
-        connector.close()
+        if connector is not None:
+            connector.close()
 
 
 def insertplayertodb(player: Player) -> int:
     connector = None
+
     try:
         connector = Utility.getconnection()
         pointer = connector.cursor()
@@ -66,14 +75,16 @@ def insertplayertodb(player: Player) -> int:
         pointer.execute(query,values)
         connector.commit()
         return playerId
-    except Exception:
+    except Exception as e:
         raise Exceptions.DaoExceptions('Error occurred while adding player to database')
     finally:
-        connector.close()
+        if connector is not None:
+            connector.close()
 
 
 def getTeamplayerList()->list:
     connector = None
+
     try:
         connector = Utility.getconnection()
         pointer = connector.cursor()
@@ -88,6 +99,7 @@ def getTeamplayerList()->list:
     except Exception:
         raise Exceptions.DaoExceptions('Error occurred while fetching teampalyer details')
     finally:
-        connector.close()
+        if connector is not None:
+            connector.close()
 
 
