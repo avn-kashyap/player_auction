@@ -20,8 +20,8 @@ def getplayerfromdb() -> list:
                                 bestfigure = player[4],id = player[0])
             playerlist.append(player_obj)
         return playerlist
-    except Exceptions.DaoExceptions as e:
-        raise Exceptions.DaoExceptions(e.message)
+    except Exception:
+        raise Exceptions.DaoExceptions('Error occurred while fetching player data from database')
     finally:
         connector.close()
 
@@ -38,8 +38,8 @@ def getteamsfromdb()->list:
             team_obj = Team(team[0],team[1])
             teamlist.append(team_obj)
         return teamlist
-    except Exceptions.DaoExceptions as e:
-        raise Exceptions.DaoExceptions(e.message)
+    except Exception:
+        raise Exceptions.DaoExceptions('Error occurred while fetching teams data from database')
     finally:
         connector.close()
 
@@ -66,8 +66,8 @@ def insertplayertodb(player: Player) -> int:
         pointer.execute(query,values)
         connector.commit()
         return playerId
-    except Exceptions.DaoExceptions as e:
-        raise Exceptions.DaoExceptions(e.message)
+    except Exception:
+        raise Exceptions.DaoExceptions('Error occurred while adding player to database')
     finally:
         connector.close()
 
@@ -85,8 +85,9 @@ def getTeamplayerList()->list:
             teamplayer_obj = TeamPlayer(teamid = teamplayer[1],playerid = teamplayer[0])
             teamplayerlist.append(teamplayer_obj)
         return teamplayerlist
-    except Exceptions.DaoExceptions as e:
-        raise Exceptions.DaoExceptions(e.message)
+    except Exception:
+        raise Exceptions.DaoExceptions('Error occurred while fetching teampalyer details')
     finally:
         connector.close()
+
 

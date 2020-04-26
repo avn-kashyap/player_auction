@@ -14,3 +14,8 @@ create table teamplayer (player_no int, team_id int, foreign key(player_no) refe
 select * from player;
 select * from team;
 select * from teamplayer;
+select * from player inner join ( team inner join teamplayer using(team_id)) using(player_no) where team_name = "CSK";
+select * from player inner join team inner join teamplayer using(team_id) using(player_no);
+select * from player inner join teamplayer using(player_no) inner join team using(team_id);
+select * from player inner join ( team inner join teamplayer using(team_id)) using(player_no);
+select * from team inner join teamplayer using(team_id);
