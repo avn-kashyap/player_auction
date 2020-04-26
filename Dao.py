@@ -1,5 +1,5 @@
 import Utility,Exceptions
-from Entity import Player
+from Entity import Player,Team,TeamPlayer
 
 """
 This module perform database interactions
@@ -7,7 +7,7 @@ This module perform database interactions
 """
 
 
-def getplayerfromdb():
+def getplayerfromdb() -> list:
     connector = None
     try:
         connector = Utility.getconnection()
@@ -15,8 +15,10 @@ def getplayerfromdb():
         pointer.execute("select* from player;")
         resultset = pointer.fetchall()
         playerlist = []
-        for i in resultset:
-            playerlist.append(i)
+        for player in resultset:
+            player_obj = Player(name = player[1],category = player[2],score = player[3],
+                                bestfigure = player[4],id = player[0])
+            playerlist.append(player_obj)
         return playerlist
     except Exceptions.DaoExceptions as e:
         raise Exceptions.DaoExceptions(e.message)
@@ -24,7 +26,7 @@ def getplayerfromdb():
         connector.close()
 
 
-def getteamsfromdb():
+def getteamsfromdb()->list:
     connector = None
     try:
         connector = Utility.getconnection()
@@ -32,8 +34,9 @@ def getteamsfromdb():
         pointer.execute("select* from team;")
         resultset = pointer.fetchall()
         teamlist = []
-        for i in resultset:
-            teamlist.append(i)
+        for team in resultset:
+            team_obj = Team(team[0],team[1])
+            teamlist.append(team_obj)
         return teamlist
     except Exceptions.DaoExceptions as e:
         raise Exceptions.DaoExceptions(e.message)
@@ -41,7 +44,7 @@ def getteamsfromdb():
         connector.close()
 
 
-def insertplayertodb(player: Player):
+def insertplayertodb(player: Player) -> int:
     connector = None
     try:
         connector = Utility.getconnection()
@@ -54,10 +57,10 @@ def insertplayertodb(player: Player):
         playerId = pointer.lastrowid
         query = "insert into teamplayer  values(%s,%s);"
         teamlist = getteamsfromdb()
-        teamid = 0
-        for i in teamlist:
-            if i[1] == player.getteamname():
-                teamid = i[0]
+        teamid = None
+        for team in teamlist:
+            if team.getteamname() == player.getteamname():
+                teamid = team.getteamid()
                 break
         values = [playerId,teamid]
         pointer.execute(query,values)
@@ -69,7 +72,7 @@ def insertplayertodb(player: Player):
         connector.close()
 
 
-def getTeamplayerList():
+def getTeamplayerList()->list:
     connector = None
     try:
         connector = Utility.getconnection()
@@ -78,10 +81,12 @@ def getTeamplayerList():
         pointer.execute(query)
         resultset = pointer.fetchall()
         teamplayerlist = []
-        for i in resultset:
-            teamplayerlist.append(i)
+        for teamplayer in resultset:
+            teamplayer_obj = TeamPlayer(teamid = teamplayer[1],playerid = teamplayer[0])
+            teamplayerlist.append(teamplayer_obj)
         return teamplayerlist
     except Exceptions.DaoExceptions as e:
         raise Exceptions.DaoExceptions(e.message)
     finally:
         connector.close()
+

@@ -37,7 +37,7 @@ if __name__=="__main__":
                     playerinfo=Service.getplayersforteam(Service.validateteamname(input('Enter team name: ')))
                     print("Player Name   -   Category\n-----------------------------")
                     for player in playerinfo:
-                        print(player[0]," - ",player[1])
+                        print(player.getname()," - ",player.getcategory())
                 except Exceptions.ServiceExceptions as e:
                     print(e.message)
 
