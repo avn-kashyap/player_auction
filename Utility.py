@@ -10,8 +10,7 @@ def getconnection():
                      password=config.get('database_server','password')
                     ,host=config.get('database_server','host'),
                     database=config.get('database_server','database'))
-    except Exception:
-        raise Exceptions.DaoExceptions("Connection to the database failed!!!!!!")
+    except mysql.connector.Error as e:
+        raise Exceptions.DaoExceptions(e.msg+"\nConnection to the database failed!!!!!!")
     else:
         return connection
-
