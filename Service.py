@@ -16,8 +16,8 @@ def getplayersforteam(teamname:str)->list:
         playerList= Dao.getplayerfromdb()
         teamList= Dao.getteamsfromdb()
         playerTeam= Dao.getTeamplayerList()
-    except Exceptions.DaoExceptions:
-        raise Exceptions.ServiceExceptions("Error while fatching  player from database!!!!!")
+    except Exceptions.DaoExceptions as e:
+        raise Exceptions.ServiceExceptions(e.message)
     else:
         for team in teamList:
             if team.getteamname()==name:
@@ -33,7 +33,7 @@ def getplayersforteam(teamname:str)->list:
                 playerinfo.append(player)
         playerinfo.sort(key=lambda playerinfo: playerinfo.getname())
         if len(playeridlist) == 0:
-            raise Exceptions.ServiceExceptions('No players found!!!')
+            raise Exceptions.NoPlayersFoundException('No players found!!!')
         else:
             return playerinfo
 
