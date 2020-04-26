@@ -68,14 +68,15 @@ if __name__=="__main__":
                 while True:
                     try:
                         playerinfo=Service.getplayersforteam(Service.validateteamname(input('Enter team name: ')))
-                        print(f'{"player name":<20} - {"category":<20}\n-----------------------------')
-                        for player in playerinfo:
-                            # print(player.getname()," - ",player.getcategory())
-                            print(f'{player.getname():<20} - {player.getcategory():<20}')
-                        break
-                    except Exceptions.NoPlayersFoundException as e:
-                        print(e.message)
-                        break
+                        if len(playerinfo) == 0:
+                            print('No players found!!!')
+                            break
+                        else:
+                            print(f'{"player name":<20} - {"category":<20}\n-----------------------------')
+                            for player in playerinfo:
+                                # print(player.getname()," - ",player.getcategory())
+                                print(f'{player.getname():<20} - {player.getcategory():<20}')
+                            break
                     except Exceptions.ServiceExceptions as e:
                         print(e.message)
                         continue

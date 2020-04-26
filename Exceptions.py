@@ -41,8 +41,3 @@ class InvalidBestfigreException(ServiceExceptions):
 class DuplicateEntryException(ServiceExceptions):
     def __init__(self,message):
         self.message = message
-
-
-class NoPlayersFoundException(ServiceExceptions):
-    def __init__(self,message):
-        self.message = message

@@ -33,7 +33,7 @@ def getplayersforteam(teamname:str)->list:
                 playerinfo.append(player)
         playerinfo.sort(key=lambda playerinfo: playerinfo.getname())
         if len(playeridlist) == 0:
-            raise Exceptions.NoPlayersFoundException('No players found!!!')
+            return list([])
         else:
             return playerinfo
 
@@ -88,9 +88,11 @@ def validatescore(score:int):
         raise Exceptions.ServiceExceptions('Invalid score check your input!!')
 
 def validateduplicate(name:str,category:str,team:str):
+
+    playersofcategory = []
+    flag = 0
     players=getplayersforteam(team)
-    playersofcategory=[]
-    flag=0
+
     for player in players:
         if player.getcategory().upper()==category:
             playersofcategory.append(player)
