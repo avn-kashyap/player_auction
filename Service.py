@@ -1,12 +1,5 @@
 import Dao,Exceptions,re
 
-def getplayerdetails():
-    try:
-        playerlist=Dao.getplayerfromdb()
-    except Exceptions.DaoExceptions:
-        raise Exceptions.ServiceExceptions("Cant fetch player details form database!!!")
-    else:
-        return playerlist
 
 def addplayer(player):
     try:
@@ -16,8 +9,9 @@ def addplayer(player):
     else:
         return playerid
 
-def getplayersforteam(team):
-    name=team.upper()
+def getplayersforteam(teamname:str)->list:
+    name=teamname.upper()
+    teamid = None
     try:
         playerList= Dao.getplayerfromdb()
         teamList= Dao.getteamsfromdb()
@@ -25,20 +19,23 @@ def getplayersforteam(team):
     except Exceptions.DaoExceptions:
         raise Exceptions.ServiceExceptions("Error while fatching  player from database!!!!!")
     else:
-        for i in teamList:
-            if i[1]==name:
-                teamid=i[0]
+        for team in teamList:
+            if team.getteamname()==name:
+                teamid=team.getteamid()
                 break
         playeridlist=[]
-        for i in playerTeam:
-            if i[1]==teamid:
-                playeridlist.append(i[0])
+        for playerteam in playerTeam:
+            if playerteam.getteamid()==teamid:
+                playeridlist.append(playerteam.getplayerid())
         playerinfo=[]
-        for i in playerList:
-            if i[0] in playeridlist:
-                playerinfo.append([i[1],i[2]])
-        playerinfo.sort(key=lambda playerinfo: playerinfo[0])
-        return playerinfo
+        for player in playerList:
+            if player.getid() in playeridlist:
+                playerinfo.append(player)
+        playerinfo.sort(key=lambda playerinfo: playerinfo.getname())
+        if len(playeridlist) == 0:
+            raise Exceptions.ServiceExceptions('No players found!!!')
+        else:
+            return playerinfo
 
 def validatecategory(arg:str):
     category=arg.upper()
@@ -47,22 +44,22 @@ def validatecategory(arg:str):
     else:
         return category
 
-def validateteamname(arg:str):
-    teamname= arg.upper()
+def validateteamname(teamname:str):
+    team_name= teamname.upper()
     try:
         teamlist=Dao.getteamsfromdb()
     except Exceptions.DaoExceptions as e:
         raise Exceptions.ServiceExceptions(e.message)
     else:
         count=0
-        for i in teamlist:
-            if i[1]==teamname:
+        for team in teamlist:
+            if team.getteamname()==team_name:
                 count+=1
                 break
         if count==0:
             raise Exceptions.InvalidTeamNameExceptions('Invalid team name check your input!!!!!')
         else:
-            return teamname
+            return team_name
 
 def validatebestfigure(arg:str):
     bestfigure= arg
@@ -88,18 +85,18 @@ def validatescore(score:int):
     if score in range(0,201):
         return score
     else:
-        raise Exceptions.ServiceExceptions('Invalid score check your input:')
+        raise Exceptions.ServiceExceptions('Invalid score check your input!!')
 
 def validateduplicate(name:str,category:str,team:str):
     players=getplayersforteam(team)
     playersofcategory=[]
     flag=0
     for player in players:
-        if player[1].upper()==category:
+        if player.getcategory().upper()==category:
             playersofcategory.append(player)
 
     for player in playersofcategory:
-        if player[0].upper()==name.upper():
+        if player.getname().upper()==name.upper():
             flag+=1
 
     if flag==0:
