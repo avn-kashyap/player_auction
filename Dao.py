@@ -45,11 +45,11 @@ def getteamsfromdb()->list:
     connector = None
     try:
         connector = Utility.getconnection()
-        pointer = connector.cursor(named_tuple = True)
+        pointer = connector.cursor()
         try:
             pointer.execute("select* from team;")
             resultset = pointer.fetchall()
-            return resultset
+            resultset
         except:
             raise Exceptions.DaoExceptions('table not found!!')
         teamlist = []
@@ -114,6 +114,4 @@ def getTeamplayerList()->list:
         if connector is not None:
             connector.close()
 
-
-print(getteamsfromdb())
 
