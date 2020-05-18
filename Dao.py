@@ -12,6 +12,17 @@ def getplayerfromdb() -> list:
     try:
         connector = Utility.getconnection()
         pointer = connector.cursor()
+
+
+        """pointer = connector.cursor(dictionary = True) // to return the data from database
+        in form of dictionary and the key: name of the column
+                                      value: data of the column
+                                      
+        pointer = connector.cursor(named_tuple = True) // returns data in the form of named
+        tuples
+        
+        """
+
         try:
             pointer.execute("select* from player;")
             resultset = pointer.fetchall()
@@ -38,6 +49,7 @@ def getteamsfromdb()->list:
         try:
             pointer.execute("select* from team;")
             resultset = pointer.fetchall()
+            resultset
         except:
             raise Exceptions.DaoExceptions('table not found!!')
         teamlist = []
